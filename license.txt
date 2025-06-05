@@ -1,0 +1,11 @@
+Model Information:
+* title:	Hi
+* source:	https://sketchfab.com/3d-models/hi-c4f9db19c2e74f7c8698214cdaf75313
+* author:	darrenyzh2010904 (https://sketchfab.com/darrenyzh2010904)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Hi" (https://sketchfab.com/3d-models/hi-c4f9db19c2e74f7c8698214cdaf75313) by darrenyzh2010904 (https://sketchfab.com/darrenyzh2010904) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

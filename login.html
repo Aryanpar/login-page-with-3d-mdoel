@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login Page with 3D Model Saying Hi</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Model Viewer JS -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    @keyframes jump {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-50px); }
+    }
+    model-viewer.jumping {
+      animation: jump 1.2s ease forwards;
+    }
+
+    #hiText {
+      position: absolute;
+      top: 10px;
+      font-size: 3rem;
+      font-weight: bold;
+      color: #2563eb;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      user-select: none;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-white text-blue-900 font-sans min-h-screen flex items-center justify-center">
+
+  <div class="bg-white shadow-2xl rounded-lg flex max-w-6xl w-full overflow-hidden relative">
+
+    <!-- Left: Login Form -->
+    <div class="w-1/2 p-10 space-y-6">
+      <h2 class="text-3xl font-bold text-blue-700">Welcome Back!</h2>
+      <form id="loginForm" class="space-y-4">
+
+        <input type="text" id="username" placeholder="Username" required
+          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+        <input type="email" id="email" placeholder="Email ID" required
+          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+        <input type="password" id="password" placeholder="Password" required
+          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+        <input type="number" id="age" placeholder="Age" required min="1"
+          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+        <input type="tel" id="phone" placeholder="Phone Number" required
+          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+        <div id="otpSection" class="hidden space-y-4">
+          <input type="text" id="otpInput" placeholder="Enter OTP"
+            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" maxlength="6" />
+          <button type="button" id="verifyOtpBtn" class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-700 transition">
+            Verify OTP
+          </button>
+        </div>
+
+        <div id="parentDetails" class="hidden space-y-4">
+          <input type="text" id="parentName" placeholder="Parent's Name"
+            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <input type="tel" id="parentPhone" placeholder="Parent's Phone Number"
+            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+
+        <button type="submit" id="loginBtn" class="bg-blue-600 text-white w-full py-2 rounded-lg hover:bg-blue-700 transition">
+          Login
+        </button>
+      </form>
+    </div>
+
+    <!-- Right: 3D Model -->
+    <div class="w-1/2 bg-blue-50 flex flex-col items-center justify-center p-6 relative">
+      <div id="hiText">Hi 👋</div>
+      <model-viewer
+        id="model"
+        src="model/scene.gltf"
+        alt="3D Model"
+        camera-controls
+        autoplay
+        animation-loop
+        ar
+        style="width: 100%; height: 400px;"
+        background-color="#ffffff"
+        exposure="1"
+      ></model-viewer>
+    </div>
+
+  </div>
+
+  <script>
+    const ageInput = document.getElementById('age');
+    const parentDetails = document.getElementById('parentDetails');
+    const phoneInput = document.getElementById('phone');
+    const otpSection = document.getElementById('otpSection');
+    const otpInput = document.getElementById('otpInput');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const model = document.getElementById('model');
+    const hiText = document.getElementById('hiText');
+
+    let generatedOtp = null;
+    let otpVerified = false;
+
+    ageInput.addEventListener('input', () => {
+      const age = parseInt(ageInput.value);
+      parentDetails.classList.toggle('hidden', !(age < 23));
+    });
+
+    phoneInput.addEventListener('change', () => {
+      if (phoneInput.value.trim().length >= 10) {
+        sendOtp();
+      } else {
+        otpSection.classList.add('hidden');
+        otpVerified = false;
+        loginBtn.disabled = false;
+      }
+    });
+
+    function sendOtp() {
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      alert(`Your OTP is: ${generatedOtp}`);
+      otpSection.classList.remove('hidden');
+      loginBtn.disabled = true;
+      otpVerified = false;
+    }
+
+    verifyOtpBtn.addEventListener('click', () => {
+      if (otpInput.value === generatedOtp) {
+        alert('OTP verified successfully!');
+        otpVerified = true;
+        otpSection.classList.add('hidden');
+        loginBtn.disabled = false;
+      } else {
+        alert('Incorrect OTP. Please try again.');
+      }
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!otpVerified) {
+        alert('Please verify your phone number with OTP before logging in.');
+        return;
+      }
+
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const age = parseInt(ageInput.value);
+      const phone = phoneInput.value.trim();
+      const parentName = document.getElementById('parentName').value;
+      const parentPhone = document.getElementById('parentPhone').value;
+
+      const formData = { username, email, password, age, phone };
+      if (age < 23) {
+        formData.parentName = parentName;
+        formData.parentPhone = parentPhone;
+      }
+
+      console.log("Form Data Submitted:", formData);
+      alert("Login successful!");
+
+      loginForm.reset();
+      parentDetails.classList.add('hidden');
+      otpSection.classList.add('hidden');
+      otpVerified = false;
+      loginBtn.disabled = false;
+    });
+
+    window.addEventListener('load', () => {
+      hiText.style.opacity = '1';
+      model.classList.add('jumping');
+
+      setTimeout(() => {
+        model.classList.remove('jumping');
+        hiText.style.opacity = '0';
+        speakHi();
+      }, 1200);
+    });
+
+    function speakHi() {
+      if (!('speechSynthesis' in window)) return;
+
+      const utterance = new SpeechSynthesisUtterance('Hi');
+      const voices = speechSynthesis.getVoices();
+      const femaleVoice = voices.find(voice =>
+        voice.name.toLowerCase().includes('female') ||
+        voice.name.toLowerCase().includes('woman') ||
+        voice.name.toLowerCase().includes('girl')
+      );
+
+      utterance.voice = femaleVoice || voices[0];
+      utterance.pitch = 1.2;
+      utterance.rate = 1;
+      speechSynthesis.speak(utterance);
+    }
+
+    window.speechSynthesis.onvoiceschanged = () => {};
+  </script>
+
+</body>
+</html>
